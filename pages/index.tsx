@@ -3,6 +3,8 @@ import { useState } from 'react'
 import styles from '../styles/Home.module.css'
 import AddressForm from '../components/AddressForm'
 import * as Web3 from '@solana/web3.js'
+import Head from 'next/head'
+import WalletContextProvider from '../context/WalletContextProvider'
 
 const Home: NextPage = () => {
   const [balance, setBalance] = useState(0)
@@ -29,15 +31,20 @@ const Home: NextPage = () => {
 
   return (
     <div className={styles.App}>
-      <header className={styles.AppHeader}>
-        <p>
-          Start Your Solana Journey
-        </p>
-        <AddressForm handler={addressSubmittedHandler} />
-        <p>{`Address: ${address}`}</p>
-        <p>{`Balance: ${balance} SOL`}</p>
-        <p>{`Is it executable? ${isExecutable}`}</p>
-      </header>
+      <Head>
+        <title>Soldev Course Project</title>
+      </Head>
+      <WalletContextProvider>
+        <header className={styles.AppHeader}>
+          <p>
+            Start Your Solana Journey
+          </p>
+          <AddressForm handler={addressSubmittedHandler} />
+          <p>{`Address: ${address}`}</p>
+          <p>{`Balance: ${balance} SOL`}</p>
+          <p>{`Is it executable? ${isExecutable}`}</p>
+        </header>
+      </WalletContextProvider>
     </div>
   )
 }
