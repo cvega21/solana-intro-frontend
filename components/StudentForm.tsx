@@ -3,15 +3,14 @@ import BasicPage from '../components/BasicPage'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import SendButton from '../components/SendButton';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { Movie } from '../classes';
+import { Movie, StudentIntro } from '../classes';
 import * as Web3 from '@solana/web3.js'
 
-const MOVIE_REVIEW_PROGRAM_ID = 'CenYq6bDRB7p73EjsPEpiYN7uveyPUTdXkDkgUduboaN'
+const STUDENT_PROGRAM_ID = 'HdE95RSVsdb315jfJtaykXhXY478h53X6okDupVfY9yf'
 
-export const MovieForm = () => {
-  const [title, setTitle] = useState('');
-  const [review, setReview] = useState('');
-  const [rating, setRating] = useState(0.0);
+export const StudentForm = () => {
+  const [name, setName] = useState('');
+  const [intro, setIntro] = useState('');
   const { connection } = useConnection();
   const { publicKey, sendTransaction } = useWallet();
   const [link, setLink] = useState('');
@@ -21,25 +20,21 @@ export const MovieForm = () => {
     set(e.target.value);
   }
 
-  useEffect(() => {
-    console.log(title, review)
-  })
-
   const handleSubmit = (e: React.BaseSyntheticEvent) => {
     e.preventDefault();
-    const movie = new Movie(title, rating, review);
-    handleTransactionSubmit(movie);
+    const studentIntro = new StudentIntro(name, intro);
+    handleTransactionSubmit(studentIntro);
   }
 
-  const handleTransactionSubmit = async (movie: Movie) => {
+  const handleTransactionSubmit = async (studentIntro: StudentIntro) => {
     if (!connection || !publicKey) return
 
-    const buffer = movie.serialize();
+    const buffer = studentIntro.serialize();
     const transaction = new Web3.Transaction();
 
     const [pda] = await Web3.PublicKey.findProgramAddress(
-      [publicKey.toBuffer(), new TextEncoder().encode(movie.title)],
-      new Web3.PublicKey(MOVIE_REVIEW_PROGRAM_ID)
+      [publicKey.toBuffer()],
+      new Web3.PublicKey(STUDENT_PROGRAM_ID)
     )
 
     const instruction = new Web3.TransactionInstruction({
@@ -61,7 +56,7 @@ export const MovieForm = () => {
         }
       ],
       data: buffer,
-      programId: new Web3.PublicKey(MOVIE_REVIEW_PROGRAM_ID)
+      programId: new Web3.PublicKey(STUDENT_PROGRAM_ID)
     })
   
     transaction.add(instruction)
@@ -82,27 +77,19 @@ export const MovieForm = () => {
         className='flex flex-col text-xl'
         id='sendSol'
       >
-        <label>movie title</label>
+        <label>name</label>
         <input
-          onChange={e => handleChange(setTitle, e)}
-          placeholder={'title'}
-          value={title}
+          onChange={e => handleChange(setName, e)}
+          placeholder={'name'}
+          value={name}
           className='text-right'
           />
-        <label>movie review</label>
+        <label>intro</label>
         <textarea 
-          onChange={e => handleChange(setReview, e)}
-          placeholder={'review'}
-          value={review}
+          onChange={e => handleChange(setIntro, e)}
+          placeholder={'intro'}
+          value={intro}
           className='text-right'
-        />
-        <label>rating</label>
-        <input 
-          onChange={e => handleChange(setRating, e)}
-          placeholder={'rating'}
-          value={rating}
-          className='text-right'
-          type='number'
         />
       </form>
       {publicKey &&
@@ -129,5 +116,3 @@ export const MovieForm = () => {
     </>
   )
 }
-
-export default MovieForm
