@@ -13,6 +13,6 @@
   color: white;
 }
 
-.AppHeader input {
+.AppHeader input, .AppHeader textarea {
   color: black;
 }
