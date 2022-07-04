@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import BasicPage from '../components/BasicPage'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { MovieForm, StudentForm } from '../components';
+import { MovieForm, StudentForm, MovieList } from '../components';
 import { Movie } from '../classes';
 
 const Serialize = () => {
@@ -26,8 +26,14 @@ const Serialize = () => {
         </select>
       </div>
       {mode === 'movie' ? 
-        <MovieForm/> : mode === 'students' ?
-        <StudentForm/> : <></>
+        <>
+          <MovieForm/> 
+          <MovieList/>
+        </>
+        : 
+        mode === 'students' ? <StudentForm/> 
+        : 
+        <></>
       }
     </BasicPage>
   )
